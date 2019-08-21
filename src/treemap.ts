@@ -101,6 +101,7 @@ export class TreeMap {
     if (node.dom) return node.dom;
     const dom = document.createElement('div');
     dom.className = NODE_CSS_CLASS;
+    dom.tabIndex = -1;
     if (this.options.caption) {
       const caption = document.createElement('div');
       caption.className = CSS_PREFIX + 'caption';
@@ -273,8 +274,41 @@ export class TreeMap {
       let address = getAddress(node);
       this.zoom(address);
     };
+    dom.onkeydown = e => {
+      if (!(e.target instanceof HTMLElement)) return;
+
+      let elem;
+      switch (e.key) {
+        // zoom to selection
+        case 'Enter':
+          const address = getAddress(e.target);
+          this.zoom(address);
+          return;
+        // move selection focus
+        case 'ArrowUp':
+          elem = e.target.parentElement;
+          break;
+        case 'ArrowDown':
+          elem = e.target.querySelector('.webtreemap-node');
+          break;
+        case 'ArrowLeft':
+          elem = e.target.previousElementSibling;
+          if (elem && !isDOMNode(elem)) {
+            elem = e.target.parentElement;
+          }
+          break;
+        case 'ArrowRight':
+          elem = e.target.nextElementSibling;
+          break;
+      }
+      if (!elem) return;
+      e.preventDefault();
+      elem.focus();
+    };
+
     container.appendChild(dom);
     this.layout(this.node, container);
+    dom.focus();
   }
 
 
