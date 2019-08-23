@@ -293,9 +293,6 @@ export class TreeMap {
           break;
         case 'ArrowLeft':
           elem = e.target.previousElementSibling;
-          if (elem && !isDOMNode(elem)) {
-            elem = e.target.parentElement;
-          }
           break;
         case 'ArrowRight':
           elem = e.target.nextElementSibling;
