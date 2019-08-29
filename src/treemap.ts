@@ -101,12 +101,15 @@ export class TreeMap {
     if (node.dom) return node.dom;
     const dom = document.createElement('div');
     dom.className = NODE_CSS_CLASS;
+    dom.setAttribute('role', 'treeitem');
     dom.tabIndex = -1;
+
     if (this.options.caption) {
-      const caption = document.createElement('div');
-      caption.className = CSS_PREFIX + 'caption';
-      caption.innerText = this.options.caption(node);
-      dom.appendChild(caption);
+      dom.textContent = this.options.caption(node);
+      // const caption = document.createElement('div');
+      // caption.className = CSS_PREFIX + 'caption';
+      // caption.innerText = this.options.caption(node);
+      // dom.appendChild(caption);
     }
     node.dom = dom;
     return dom;
@@ -236,6 +239,7 @@ export class TreeMap {
           style.width = px(widthPx - spacing);
           style.top = px(y);
           style.height = px(heightPx - spacing);
+          dom.setAttribute('aria-level', level.toString());
           if (needsAppend) {
             node.dom!.appendChild(dom);
           }
@@ -285,26 +289,34 @@ export class TreeMap {
           this.zoom(address);
           return;
         // move selection focus
-        case 'ArrowUp':
+        case 'ArrowLeft':
           elem = e.target.parentElement;
           break;
-        case 'ArrowDown':
+        case 'ArrowRight':
           elem = e.target.querySelector('.webtreemap-node');
           break;
-        case 'ArrowLeft':
+        case 'ArrowUp':
           elem = e.target.previousElementSibling;
+          if (elem && !isDOMNode(elem)) {
+            elem = e.target.parentElement;
+          }
           break;
-        case 'ArrowRight':
+        case 'ArrowDown':
           elem = e.target.nextElementSibling;
           break;
       }
       if (!elem) return;
+      // TODO- reset previously focused element to tabindex -1
       e.preventDefault();
+      elem.tabIndex = 0;
       elem.focus();
     };
 
     container.appendChild(dom);
     this.layout(this.node, container);
+    // root element must remain focusable
+    dom.tabIndex = 0;
+    dom.setAttribute('role', 'tree');
     dom.focus();
   }
 
