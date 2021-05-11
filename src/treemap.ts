@@ -107,11 +107,12 @@ export class TreeMap {
     if (node.dom) return node.dom;
     const dom = document.createElement('div');
     dom.className = NODE_CSS_CLASS;
+    dom.setAttribute('role', 'treeitem');
     dom.tabIndex = -1;
     if (this.options.caption) {
       const caption = document.createElement('div');
       caption.className = CSS_PREFIX + 'caption';
-      caption.innerText = this.options.caption(node);
+      caption.textContent = this.options.caption(node);
       dom.appendChild(caption);
     }
     node.dom = dom;
@@ -243,6 +244,7 @@ export class TreeMap {
           style.width = px(widthPx - spacing);
           style.top = px(y);
           style.height = px(heightPx - spacing);
+          dom.setAttribute('aria-level', (level + 1).toString());
           if (needsAppend) {
             node.dom!.appendChild(dom);
           }
@@ -325,6 +327,7 @@ export class TreeMap {
     container.appendChild(dom);
     this.layout(this.node, container);
     dom.tabIndex = 0;
+    dom.setAttribute('role', 'tree');
     // calling elem.focus() on initial render isn't done here and is up to the library consumer.
   }
 
