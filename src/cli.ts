@@ -130,6 +130,7 @@ body {
 }
 #treemap {
   width: 95vw;
+  max-width: 1300px;
   height: 80vh;
 }
 ${treemapCSS}
