@@ -1,10 +1,10 @@
 {
   "name": "webtreemap-cdt",
-  "version": "3.0.0",
+  "version": "3.1.1",
   "description": "treemap visualization",
-  "main": "build/src/index.js",
+  "main": "dist/webtreemap.js",
   "bin": {
-    "webtreemap": "build/src/cli.js"
+    "webtreemap": "build/cli.js"
   },
   "dependencies": {
     "commander": "^2.11.0"
@@ -23,7 +23,7 @@
     "build": "tsc && rollup -c",
     "demo": "gdu -ab node_modules/ | node build/cli.js --title 'node_modules for webtreemap' > docs/index.html",
     "build:demo": "yarn build && npx tsc --module commonjs && yarn demo",
-    "roll": "yarn build; gcp -f dist/webtreemap.js ~/chromium/src/third_party/blink/renderer/devtools/front_end/webtreemap/webtreemap.js"
+    "roll": "yarn build; gcp -f dist/webtreemap.js ~/chromium/src/third_party/third_party/devtools-frontend/src/front_end/third_party/webtreemap/webtreemap.js"
   },
   "files": [
     "build/*.js",
