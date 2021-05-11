@@ -7,22 +7,22 @@
     "webtreemap": "build/cli.js"
   },
   "dependencies": {
-    "commander": "^2.11.0"
+    "commander": "^7.2.0"
   },
+  "type": "module",
   "devDependencies": {
-    "@types/commander": "^2.11.0",
-    "@types/node": "^8.0.34",
+    "@types/node": "^15.0.2",
     "prettier": "1.14.3",
     "rollup": "^1.19.4",
     "rollup-plugin-banner": "^0.2.1",
-    "typescript": "^3.1.3"
+    "typescript": "^4.2.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "fmt": "prettier --write src/*.ts demo/*.ts *.md",
     "build": "tsc && rollup -c",
     "demo": "mkdir -p public; du -a node_modules/ | node build/cli.js --title 'node_modules for webtreemap' > public/index.html",
-    "build:demo": "yarn build && yarn tsc --module commonjs && yarn demo",
+    "build:demo": "yarn build && yarn demo",
     "watch": "find src | entr yarn build:demo",
     "clean": "rm -rf build dist public",
     "roll": "yarn build; gcp -f dist/webtreemap.js ~/chromium/src/third_party/third_party/devtools-frontend/src/front_end/third_party/webtreemap/webtreemap.js"

@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-import {Command} from 'commander';
+ import { Command } from 'commander';
+
 import * as fs from 'fs';
 import * as readline from 'readline';
+import * as path from 'path';
+import { URL } from 'url';
 
-import * as tree from './tree';
+const __dirname = new URL('.', import.meta.url).pathname;
+
+
+import * as tree from './tree.js';
 
 /** Reads stdin into an array of lines. */
 async function readLines() {
@@ -96,7 +102,7 @@ function humanSizeCaption(n: tree.Node): string {
 }
 
 async function main() {
-  const args = new Command()
+  const program = new Command()
                    .description(`Generate web-based treemaps.
 
   Reads a series of
@@ -107,9 +113,10 @@ async function main() {
                    .option('--title [string]', 'title of output HTML')
                    .parse(process.argv);
   const node = treeFromLines(await readLines());
-  const treemapJS = await readFile(__dirname + '/../dist/webtreemap.js');
-  const treemapCSS = await readFile(__dirname + '/../src/styles-to-add.css');
-  const title = args.title || 'webtreemap';
+  const treemapJS = await readFile('./../dist/webtreemap.js');
+  const treemapCSS = await readFile('./../src/styles-to-add.css');
+  const options = program.opts();
+  const title = options.title || 'webtreemap';
 
   let output = `<!doctype html>
 <title>${title}</title>
@@ -130,8 +137,8 @@ ${treemapCSS}
   caption: ${humanSizeCaption},
 });</script>
 `;
-  if (args.output) {
-    fs.writeFileSync(args.output, output, {encoding: 'utf-8'});
+  if (options.output) {
+    fs.writeFileSync(options.output, output, {encoding: 'utf-8'});
   } else {
     console.log(output);
   }
