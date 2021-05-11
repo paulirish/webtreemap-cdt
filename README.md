@@ -50,7 +50,7 @@ webtreemap.render(container, data, options);
 line, so the build has two layers. The command line app embeds the output
 of the build into its output so it's a bit confusing.~
 
-Run `yarn run build` to compile TS -> build/JS with tsc and run rollup to make the dist.
+Run `yarn run build` to compile TS -> build/JS (as esm) and then run rollup to make the dist (iife).
 
 Run `yarn run build:demo` to create a `public/index.html` demo page.
 
