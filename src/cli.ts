@@ -123,6 +123,8 @@ body {
 }
 ${treemapCSS}
 </style>
+<input type=text placeholder=sldfkjsdf>
+<input type=radio>
 <div id='treemap'></div>
 <script>const data = ${JSON.stringify(node)}</script>
 <script>${treemapJS}</script>

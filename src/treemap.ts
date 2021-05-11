@@ -307,14 +307,23 @@ export class TreeMap {
       }
       if (!elem) return;
       elem = elem as HTMLElement; // lol
+
+      // Reset tabIndex as we have a new focused item
+      // dom.tabIndex = -1; // Actually lets keep it on the root
+      const tabIndex0Elems = Array.from(dom!.querySelectorAll('*[tabindex="0"]')) as HTMLElement[];
+      for (const elem of tabIndex0Elems) {
+        elem.tabIndex = -1;
+      }
+
       e.preventDefault();
+      elem.tabIndex = 0;
       elem.focus();
     };
 
     container.appendChild(dom);
     this.layout(this.node, container);
-    this.zoom([]); // 'select' the root node
-    // calling elem.focus() isn't done here and is up to the library consumer.
+    dom.tabIndex = 0;
+    // calling elem.focus() on initial render isn't done here and is up to the library consumer.
   }
 
 
@@ -345,19 +354,12 @@ export class TreeMap {
       for (const c of node.children) {
         if (c.dom) c.dom.style.zIndex = '0';
       }
-
-      // Reset any tabIndex as we have new focused items
-      const tabIndex0Elems = Array.from(node.dom!.querySelectorAll('*[tabindex="0"]')) as HTMLElement[];
-      for (const elem of tabIndex0Elems) {
-        elem.tabIndex = 0;
-      }
-
       node = node.children[index];
       const style = node.dom!.style;
       style.zIndex = '1';
-      // Focused item
-      node.dom!.tabIndex = 0;
-      // See discussion in layout() about positioning. https://github.com/paulirish/webtreemap-cdt/pull/1#discussion_r316867244
+      // TODO, tabindex 0 follows focus as the user moves around https://github.com/paulirish/webtreemap-cdt/pull/1#discussion_r316867244
+      // ...
+      // See discussion in layout() about positioning.
       style.left = px(padLeft - 1);
       style.width = px(width);
       style.top = px(padTop - 1);
