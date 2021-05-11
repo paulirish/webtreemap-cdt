@@ -309,14 +309,13 @@ export class TreeMap {
       elem = elem as HTMLElement; // lol
 
       // Reset tabIndex as we have a new focused item
-      // dom.tabIndex = -1; // Actually lets keep it on the root
       const tabIndex0Elems = Array.from(dom!.querySelectorAll('*[tabindex="0"]')) as HTMLElement[];
       for (const elem of tabIndex0Elems) {
         elem.tabIndex = -1;
       }
 
       e.preventDefault();
-      elem.tabIndex = 0;
+      elem.tabIndex = 0; // most recently focused element should retain focusability
       elem.focus();
     };
 
