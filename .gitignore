@@ -1,6 +1,7 @@
 /build
 /node_modules
 /demo/demo.js
+/docs
 
 # IDEs and editors
 .idea
