@@ -249,6 +249,7 @@ export class TreeMap {
             node.dom!.appendChild(dom);
           }
 
+          this.associateCaptionWithLabelledBy(dom);
           this.layoutChildren(child, level + 1, widthPx, heightPx);
 
           // -1 so inner borders overlap.
@@ -326,11 +327,13 @@ export class TreeMap {
 
     container.appendChild(dom);
     this.layout(this.node, container);
+
+    // initialize root node
+    this.associateCaptionWithLabelledBy(dom);
     dom.tabIndex = 0;
     dom.setAttribute('role', 'tree');
     // calling elem.focus() on initial render isn't done here and is up to the library consumer.
   }
-
 
   layout(node: Node, container: HTMLElement) {
     const width = container.offsetWidth;
@@ -371,6 +374,12 @@ export class TreeMap {
       style.height = px(height);
     }
     this.layoutChildren(node, 0, width, height);
+  }
+
+  private associateCaptionWithLabelledBy(dom: HTMLElement) {
+    const captionId = '_wtm-cap-' + getAddress(dom).join('-');
+    dom.firstElementChild!.id = captionId;
+    dom.setAttribute('aria-labelledby', captionId);
   }
 }
 
