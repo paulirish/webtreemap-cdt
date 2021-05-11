@@ -291,9 +291,12 @@ export class TreeMap {
           const address = getAddress(e.target);
           this.zoom(address);
           return;
+
         // move selection focus
         case 'ArrowUp':
           elem = e.target.parentElement;
+          // You cannot 'up' past the root
+          if (elem === dom.parentElement) return;
           break;
         case 'ArrowDown':
           elem = e.target.querySelector('.webtreemap-node');
