@@ -5,4 +5,3 @@
   },
   "build": "yarn run build:demo"
 }
-
