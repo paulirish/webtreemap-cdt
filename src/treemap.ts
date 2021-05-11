@@ -19,7 +19,7 @@ import {Node} from './tree';
 const CSS_PREFIX = 'webtreemap-';
 const NODE_CSS_CLASS = CSS_PREFIX + 'node';
 
-export function isDOMNode(e: Element): boolean {
+export function isDOMNode(e: HTMLElement): boolean {
   return e.classList.contains(NODE_CSS_CLASS);
 }
 
@@ -40,10 +40,10 @@ export interface Options {
  * get the index of this node in its parent's children list.
  * O(n) but we expect n to be small.
  */
-function getNodeIndex(target: Element): number {
+function getNodeIndex(target: HTMLElement): number {
   let index = 0;
-  let node: Element | null = target;
-  while ((node = node.previousElementSibling)) {
+  let node: HTMLElement | null = target;
+  while ((node = node.previousElementSibling as HTMLElement)) {
     if (isDOMNode(node)) index++;
   }
   return index;
@@ -54,9 +54,9 @@ function getNodeIndex(target: Element): number {
  * into the Node tree.  An address [a1,a2,...] refers to
  * tree.chldren[a1].children[a2].children[...].
  */
-export function getAddress(el: Element): number[] {
+export function getAddress(el: HTMLElement): number[] {
   let address: number[] = [];
-  let n: Element | null = el;
+  let n: HTMLElement | null = el;
   while (n && isDOMNode(n)) {
     address.unshift(getNodeIndex(n));
     n = n.parentElement;
@@ -273,7 +273,7 @@ export class TreeMap {
   render(container: HTMLElement) {
     const dom = this.ensureDOM(this.node);
     dom.onclick = e => {
-      let node: Element | null = e.target as Element;
+      let node: HTMLElement | null = e.target as HTMLElement;
       while (!isDOMNode(node)) {
         node = node.parentElement;
         if (!node) return;
@@ -306,13 +306,15 @@ export class TreeMap {
           break;
       }
       if (!elem) return;
+      elem = elem as HTMLElement; // lol
       e.preventDefault();
       elem.focus();
     };
 
     container.appendChild(dom);
     this.layout(this.node, container);
-    dom.focus();
+    this.zoom([]); // 'select' the root node
+    // calling elem.focus() isn't done here and is up to the library consumer.
   }
 
 
@@ -343,10 +345,19 @@ export class TreeMap {
       for (const c of node.children) {
         if (c.dom) c.dom.style.zIndex = '0';
       }
+
+      // Reset any tabIndex as we have new focused items
+      const tabIndex0Elems = Array.from(node.dom!.querySelectorAll('*[tabindex="0"]')) as HTMLElement[];
+      for (const elem of tabIndex0Elems) {
+        elem.tabIndex = 0;
+      }
+
       node = node.children[index];
       const style = node.dom!.style;
       style.zIndex = '1';
-      // See discussion in layout() about positioning.
+      // Focused item
+      node.dom!.tabIndex = 0;
+      // See discussion in layout() about positioning. https://github.com/paulirish/webtreemap-cdt/pull/1#discussion_r316867244
       style.left = px(padLeft - 1);
       style.width = px(width);
       style.top = px(padTop - 1);
